@@ -17,6 +17,10 @@
   },
   "homepage": "https://github.com/Paul-Salvi/Social-News-Backend#readme",
   "dependencies": {
+    "@prisma/client": "^2.20.1",
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "prisma": "^2.20.1"
   }
 }
