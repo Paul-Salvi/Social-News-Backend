@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model comments {
+  commentId Int      @id @default(autoincrement())
+  userId    Int?
+  postId    Int
+  parentId  Int?
+  comment   String   @db.VarChar(150)
+  createdOn DateTime @db.DateTime(0)
+  isDeleted Int      @db.TinyInt
+  posts     posts    @relation(fields: [postId], references: [postId])
+  users     users?   @relation(fields: [userId], references: [userId])
+
+  @@index([postId], name: "FK_Post_idx")
+  @@index([userId], name: "FK_User_idx")
+}
+
+model permissions {
+  PermissionId     Int                @id @default(autoincrement())
+  Name             String             @unique @db.VarChar(40)
+  role_permissions role_permissions[]
+}
+
+model posts {
+  postId      Int        @id @default(autoincrement())
+  userId      Int
+  postTypeId  Int
+  title       String     @db.VarChar(300)
+  description String?    @db.VarChar(500)
+  isflagged   Int        @db.TinyInt
+  isDeleted   Int        @db.TinyInt
+  createdOn   DateTime   @db.DateTime(0)
+  updatedOn   DateTime   @db.DateTime(0)
+  post_type   post_type  @relation(fields: [postTypeId], references: [postTypeId])
+  users       users      @relation(fields: [userId], references: [userId])
+  comments    comments[]
+
+  @@index([postTypeId], name: "FK_PostType_idx")
+  @@index([userId], name: "FK_UserId_idx")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model post_tags {
+  postId Int
+  tagId  Int
+  id     Int @id @default(autoincrement())
+
+  @@index([tagId], name: "Indx_TagId")
+  @@ignore
+}
+
+model post_type {
+  postTypeId Int     @id @default(autoincrement())
+  postType   String  @db.VarChar(45)
+  isActive   Int     @db.TinyInt
+  posts      posts[]
+}
+
+model roles {
+  RoleId           Int               @id @default(autoincrement())
+  Name             String            @unique @db.VarChar(40)
+  IsEnabled        Boolean           @db.Bit(1)
+  role_permissions role_permissions?
+  users            users[]
+}
+
+model role_permissions {
+  RoleId       Int         @id
+  PermissionId Int
+  IsActive     Int         @db.TinyInt
+  permissions  permissions @relation(fields: [PermissionId], references: [PermissionId])
+  roles        roles       @relation(fields: [RoleId], references: [RoleId])
+
+  @@index([PermissionId], name: "FkPermissionId_idx")
+}
+
+model tags {
+  tagId Int    @id @default(autoincrement())
+  name  String @db.VarChar(45)
+}
+
+model users {
+  userId    Int        @id @default(autoincrement())
+  roleId    Int
+  username  String     @db.VarChar(45)
+  email     String     @db.VarChar(45)
+  token     String     @db.VarChar(300)
+  isActive  Int        @db.TinyInt
+  createdOn DateTime   @db.DateTime(0)
+  roles     roles      @relation(fields: [roleId], references: [RoleId])
+  comments  comments[]
+  posts     posts[]
+
+  @@index([roleId], name: "FK_RoleId_idx")
+}
+
+model votes {
+  postId Int
+  userId Int
+  vote   Int @db.TinyInt
+
+  @@unique([postId, userId], name: "Indx_UserPost")
+}
+
+model product {
+  productId   Int     @id @default(autoincrement())
+  title       String  @db.VarChar(97)
+  price       Decimal @db.Decimal(6, 2)
+  description String  @db.VarChar(772)
+  category    String  @db.VarChar(14)
+  image       String  @db.VarChar(71)
+}
