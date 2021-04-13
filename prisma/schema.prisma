@@ -108,3 +108,12 @@ model votes {
 
   @@unique([postId, userId], name: "Indx_UserPost")
 }
+
+model product {
+  productId   Int     @id @default(autoincrement())
+  title       String  @db.VarChar(97)
+  price       Decimal @db.Decimal(6, 2)
+  description String  @db.VarChar(772)
+  category    String  @db.VarChar(14)
+  image       String  @db.VarChar(71)
+}
