@@ -1,3 +1,4 @@
+require('dotenv/config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -5,7 +6,7 @@ var cors = require('cors');
 app.use(cors());
 const port = process.env.PORT || 4000;
 const productRouter = require('./src/routes/products.routes.js');
-const paymentRouter=require('./src/routes/payments.routers.js');
+const paymentRouter = require('./src/routes/payments.routers.js');
 app.use(bodyParser.json());
 app.use('/api/v1/product', productRouter);
 app.use('/api/v1/payment', paymentRouter);

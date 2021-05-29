@@ -4,5 +4,6 @@ const productController = require('../contollers/productController.js');
 router.post('/', productController.addProduct);
 router.post('/getProduct', productController.getProduct);
 router.post('/getAllProducts', productController.getAllProducts);
+router.post('/getProductByCategory', productController.getProductByCategory);
 router.post('/getProductsByPageNumber', productController.getProductsByPageNumber);
 module.exports = router;
